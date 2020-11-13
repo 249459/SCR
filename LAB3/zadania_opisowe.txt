@@ -1,0 +1,13 @@
+Zadanie 3 
+W tym zdaniu trzeba było zapoznać się z system plików proc.
+Jest to folder w którym możemy znaleźć foldery nazwane poszczególnym PID procesów,
+gdy wejdziemy do folderu \proc\PID_Procesu mamy poszczególne pliki/foldery są to deskryptory 
+danego procesu. Moje badania odbyły się w następujący sposób stworzyłem proces xclock
+wszedłem do katalogu /proc/7100 i otworzyłem plik stat, w tym pliku są informację 
+z których korzysta program ps można to zobaczyć wywołując program ps -l i porównując 
+otrzymany output z tym co znajduję się w pliku stat(PID procesu, PPID proces itd).
+Ponad to program top też korzysta z katalogu proc co można sprawdzić poprzez 
+odebranie prawa dostępu do czytania z poszczególnych plików    
+
+
+Zadanie 4
