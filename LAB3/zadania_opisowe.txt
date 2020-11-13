@@ -49,11 +49,21 @@ Zadanie 6
         openat(AT_FDCWD, "/etc/nsswitch.conf", O_RDONLY|O_CLOEXEC) = 6
     Sprawdzenie edytowanego pliku 
         Po zapisaniu logów do pliku wyszukałem poleceniem grep poleceń takich jak open/close
-        zauwayżłem ,że plik był na zmiane otwierany i zamykan wiec nie był on cały czas otwarty.
+        zauwayżłem ,że plik był na zmiane otwierany i zamykan wiec nie był on cały czas otwarty, był otwarty 
+        tylko podczas kluczowych instrukcji.
+    Sprawdzenie deskryptorów
+            Wywołałem instrukcje strace -e trace=desc ./zad4
+            Widać w koljenych podanych przykładowo punktach 
+                fstat(6, {st_mode=S_IFREG|0644, st_size=99819, ...}) = 0
+                write(1, "Hello world", 11Hello world) 
+            ,że wywołanie posiada dwa deksryptory 6 oraz 1, 1 oznacza standardowe wyjście 
+            co jest oczywiste bo printujemy.
+
 Zadnie 7
     Program poprzez brak warunku kończącego w petli for wychodzi poza zakres
     przez co odwoływał się do pamięci która nie należała do niego.
     Znalałem ten problem wykorzystując wywoałnie strace ./zad7
     w logach zobaczyłem dziwne operacje operacje piasnia których nie powinno być.
     Program został zabity przez sygnał SIGSEVGV a ja otrzymałem na wyjściu seg faulta.
-    
+    Dzięki poleceniu strace -t ./zad7 które dodaje timestampy można zobaczyć ile trwają 
+    poszczególne wywołania instrukcji.
