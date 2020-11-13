@@ -35,3 +35,25 @@ Zadanie 5
             strace -fe trace=execve [polecenie] - pozwala na sprawdzenie jakie inne programy otwiera proces 
             strace -r [polecenie] - wyświetla logi w raz z relatywnym czasem między początkami kolejnych instrukcji 
             strace -c [polecenie] - wyświetla raport o procentowym czasie spędzonym na wykonywaniu danych instrukcji.
+Zadanie 6
+    Analiza programu programu który wyświetla "Hello world":
+        Podczas analizy programu można zauważyć iż przed wyświetleniem
+        na stdout musi dojść do wielu nisko poziomowych operacji. Wykonanie polecenia
+        zaczyna się od uruchomienia programu przez funkcje execve(), można też zobaczyć mapowanie pamięci 
+        poleceni mmap(), także wiele operacji na poszczególnych komórkach pamięci aż w Końcu wypisanie oraz
+        zakończenie programu.
+    Wyszukanie odbyło się 
+        strace -o 2.txt bash
+        cat 2.txt | grep open | grep con
+        w ten sposób znaleziona wywołanie instrukcji 
+        openat(AT_FDCWD, "/etc/nsswitch.conf", O_RDONLY|O_CLOEXEC) = 6
+    Sprawdzenie edytowanego pliku 
+        Po zapisaniu logów do pliku wyszukałem poleceniem grep poleceń takich jak open/close
+        zauwayżłem ,że plik był na zmiane otwierany i zamykan wiec nie był on cały czas otwarty.
+Zadnie 7
+    Program poprzez brak warunku kończącego w petli for wychodzi poza zakres
+    przez co odwoływał się do pamięci która nie należała do niego.
+    Znalałem ten problem wykorzystując wywoałnie strace ./zad7
+    w logach zobaczyłem dziwne operacje operacje piasnia których nie powinno być.
+    Program został zabity przez sygnał SIGSEVGV a ja otrzymałem na wyjściu seg faulta.
+    

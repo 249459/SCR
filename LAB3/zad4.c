@@ -3,9 +3,10 @@
 
 
 int main(){
-    while(1){
-        printf("888888");
-    }
+    printf("Hello world");
+    // while(1){
+    //     printf("Hello world");
+    // }
 }
 
 
