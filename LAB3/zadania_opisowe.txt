@@ -3,30 +3,35 @@ W tym zdaniu trzeba było zapoznać się z system plików proc.
 Jest to folder w którym możemy znaleźć foldery nazwane poszczególnym PID procesów,
 gdy wejdziemy do folderu \proc\PID_Procesu mamy poszczególne pliki/foldery są to pliki z ifnormacjami
 na temat danego procesu danego procesu. Moje badania odbyły się w następujący sposób stworzyłem proces xclock
-wszedłem do katalogu /proc/7100 i otworzyłem plik status, w tym pliku są informację 
+wszedłem do katalogu /proc/7100 i wypisałem plik status na treminal(cat staus), w tym pliku są informację 
 z których korzysta program ps można to zobaczyć wywołując program ps -l i porównując 
 otrzymany output z tym co znajduję się w pliku stat(PID procesu, PPID proces itd).
 Ponad to program top też korzysta z katalogu proc co można sprawdzić poprzez 
-odebranie prawa dostępu do czytania z poszczególnych plików    
+odebranie prawa dostępu do czytania z poszczególnych plików, w folderze fd możemy 
+sprawdzić różne deskryptory, w innych plikach katologach możemy znaleźć jeszcze więcej informacji.
 
 Zadanie 4
- Porogram łapiący sgnały:
+ Program łapiący sgnały:
     Uruchomienie programu łapiącego sygnały i wyświetleniu pliku /proc/status można zobaczyć 
-    jakie sygnały zostają obłsugiwane w linijce SigCgt po przejściu na system binarny 
-    dtsałem inforamcję 110101000000000 czyli zostały obsłużone sygnały o numerach 10, 12 ,14 oraz 15 czyli 
+    jakie sygnały zostają obsługiwane w linijce SigCgt po przejściu na system binarny 
+    dostałem informację 110101000000000 czyli zostały obsłużone sygnały o numerach 10, 12 ,14 oraz 15 czyli 
     SIGUSR1, SIGUSR2 , SIGALRAm oraz SIGTERM.
  Potok programów (./zad4 | cat | cat > ./1.txt):
-    Program(./zad4) wypisuje prosty tekst. Po uruchomieniu wszystkich porgramów w potoku 
-    wyświetliłem liste filedescriptorów przy użyciu polecenia ls- l /proc/PID_danego_procesu_z_potoku, 
+    Program(./zad4) wypisuje prosty tekst. Po uruchomieniu wszystkich programów w potoku 
+    wyświetliłem listę filedescriptorów przy użyciu polecenia ls- l /proc/PID_danego_procesu_z_potoku, 
     dzięki temu zauważyłem ,że każdy znich posiada 0 ->, 1->, 2-> które ozanczają kolejno stdin, stdout,
     stderr. Obserwując kolejno dla każdego procesu z potoku możemy zauwayżć iż standardowe 
     wyjście stdout pierwszego jest skierowane na wejście drugiego(stdin), drugi 
-    natomiast ma ustawione wejście(sdtin) na wyjście pierszego a wyjście(stdout) 
+    natomiast ma ustawione wejście(sdtin) na wyjście pierwszego a wyjście(stdout) 
     ma ustawione na wejście(sdtin) trzeciego, trzeci ma wejście(sdtin) ustawione na wyjście drugiego(stdout)
-    a wyjście trzeciego jest przekierowane do ./1.txt(BARDZO SZYBKO PLIK SIE ROBI OGROMNY, LEPIEJ UWAZAC).
-    Obserwując te zależności jesteśmy w stanie ustalić który program jak był wywoałny w potoku.
+    a wyjście trzeciego jest przekierowane do ./1.txt(BARDZO SZYBKO PLIK SIĘ ROBI OGROMNY, LEPIEJ UWAŻAĆ).
+    Obserwując te zależności jesteśmy w stanie ustalić który program jak był wywołany w potoku.
 
 Zadanie 5
-
-
-
+   strace - to narzędzie do analizy kodu badające interakcję programu z kernelem systemu operacyjnego.
+        Ważne opcje:
+            strace -o {nazwa pliku] [polecenie] - takie wywołanie pozwala zapisać logi do wskazanego pliku
+            strace -p [PID_NUMER] - pozwala podłączyć się do istniejącego procesu 
+            strace -fe trace=execve [polecenie] - pozwala na sprawdzenie jakie inne programy otwiera proces 
+            strace -r [polecenie] - wyświetla logi w raz z relatywnym czasem między początkami kolejnych instrukcji 
+            strace -c [polecenie] - wyświetla raport o procentowym czasie spędzonym na wykonywaniu danych instrukcji.
