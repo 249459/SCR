@@ -1,0 +1,38 @@
+zad 1
+ps wyswietla liste procesow wykonwyanych przy wywołaniu z -f dostajemy pelny format a przy -l dlugi format
+    -u wyszukiwanie po wskazany uzytkowniku
+    -t wszukuje procesow w okreslonym terminalu(tty)
+    -p wyszukuje proces po ID
+zad 2
+Proces A to terminal proces B to powłoka sh a proces C to uruchomienie xclock& z pozoimu powłoki sh
+Badanie zostało przeprowadzone na komputerze stacjonarny i na diablo
+zakończenie procesu B:
+    -lokalnie skończyło sie tym ,że proces C zostal odziedziczony przez systemd
+    -na diablo skończyło sie tym ,że proces C zostal odziedziczony pzez init
+zad 3
+Wykorzystując trzy skrypty( wywołanie ./sh1|./sh2|./sh3 &) w których wykonuje sie jedynie czekanie widać ,że sa to potomkowie 
+terminala w ktory zostalo wykorzystane wywolanie potokowe. Sprawdzenie odbylo sie z programu ps -f
+
+zad 4
+Otwierając potok w czterech terminalach  w dwoch do zapisu, w dwoch do odczytu:
+    -dane wpisane do procesow piszacych są losowo rozdzielane między procesami czytającymi
+    -jeżeli zamkniemy jeden proces piszacy to nic sie nie dzieje caly czas mozna wpiswywac do pozostalego procesu piszacego
+    -jeżeli zamkniemy jeden proces czytajacy to caly to zostanie jeden proces czytajacy jedne piszacy i wszystko działa
+    -jeżeli usuniemy ostani proces piszacy to proces czytajacy zamknie sie samoistnie 
+    -jeżeli zamkniemy ostatni proces czytajacy to ostatni procesz piszacy zakończy sie dopiero po probie wpisania czego przez proces
+    sygnałem SIGPIPE
+zad 5
+Wszystkie sygnały za wyjątkiem -9 zostały przechwycone, -9 zakonczyl prace skryptu.
+Wykorzystany skrypt ./zad5.sh gdy złapał sygnał wypisał złapany
+zad 6
+Wykorzystanie sygnału SIGSTOP zatrzymuje wykonwyanie tak samo jak CTRL + z, SIGCONT wznawia program i blizej mu do bg poniewaz 
+oba wznaiwaja proces ale juz w tle.
+
+zad 7
+Zmiane priorytetu obsługuje sie polceniem renice, można jedynie zwiekszyc wartość co faktycznie obniża priorytet
+działanie tego można zauważyć wywołując program top gdzie w rubryce PR mamy zpaisany priorytet. Żeby efekt był bardziej widoczny 
+stworzyłem dwa skrypty priorytet1.sh, priorytet2.sh przy wywoałniu
+"nice -n 10 ./priorytet2.sh ./priorytet1.sh" obniżony został priorytet wykonania skryptu priorytet2.sh
+tym samym napis ze skryptu ./priorytet1.sh wypisal sie szybciej.
+
+zad 8
