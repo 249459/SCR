@@ -1,0 +1,41 @@
+Zadanie 1.
+        Program napisany przeze mnie jak i ten dostarczony w materiałach działają w zbliżony sposób.
+    Jedyna różnica wynika z faktu iż w moim programie podaje faktyczne ID wątku,
+    a w programie z materiałów jest ID jak numer kolejno utworzonego wątku. 
+    W obu programach kolejność wypisywanych napisów jest różna i nie zależy od kolejności tworzonych wątków.
+    Wynika to z faktu iż przydzielanie dostępu do standardowego wyjścia jest realizowane przez algorytm planisty 
+    na bieżąco i to od jego obliczeń zależy kto dostanie szybciej wyjście.
+
+Zadanie 2.
+        Program nie wyświetla wyjść wątków za każdym razem tak samo, wynika to z tego samego co w poprzednim zadaniu, planista
+    musi na bieżąco przedzielać różne zasoby. Można jednak zauważyć iż w większej liczbie wywołań wątki utworzone jako 
+    pierwsze wypisywały informacje jako pierwsze, prawdopodobnie wynika to z faktu dodanego opóźnienia oraz z faktu iż zostały utworzone 32 wątki,
+    co jednak wprowadza pewien narzut czasowy dzięki temu te tworzone szybciej ruszały też troche szybciej.
+Zadnie 3.
+    Po przeanalizowaniu programów trzeba zauważyć, że podczas przekazywania argumentu do wątku konieczna jest konwersja do 
+    typu  void *, w wątku natomiast trzeba dokonać odwrotnej konwersji do typu oczekiwanego, gdy chcemy przekazać jeden argument 
+    to po prostu dokonujemy konwersji na pojedynczej zmiennej którą przekazujemy, gdy chcemy przekazać wiele argumentów musimy przekazać 
+    strukturę która zawiera wszystkie zmienne które chcemy przekazać(na tej strukturze też trzeba wykonać rzutowanie).
+
+
+    Bug w programie bug3.c, wynika z przekazywania zmiennej przez referencje, oraz złe rzutowanie już w wątku.
+    Bug został poprawiony. 
+
+Zadanie 4.
+    Program kończy się zanim wątki skończą się wykonywać. Problem ten można rozwiązać dodając instrukcje  pthread_exit(),
+    bądź pthread_join(). Pierwsza instrukcja zapewni to ,że wątki się wykonają nawet po zakończeniu funkcji main a druga 
+    instrukcja sprawi ,że w miejscu jej wywołania program poczeka aż wszystkie wątki zakończą swoją prace. Bug został poprawiony. 
+
+Zadanie 5. 
+    Oba programy wykonują się prawidłowo, różnice wykonania wynikają z faktu iż w jednym programie korzystamy z pthread_join(),
+    dzięki czemu w miejscu wywołania tej funkcji czekamy aż wątki zakończą swoją pracę co widać w wywołaniu bo wszystkie wątki 
+    kończą prace przed zakończeniem main'a. Gdy wykorzystamy detached nie czekamy na zakończenie wątków, przez co jesteśmy zobligowani 
+    do wywołania funkcji pthread_exit(), tak żeby mogły wykonać się nawet gdy skończy się main.
+
+Zadanie 6 
+    Problemy były dwa:
+        -stos  był za mały, aby to zmienić wielokość należy ustawić odpowiednią wielkość stosu korzystając 
+        z funkcji pthread_attr_setstacksize(),która zapisuje dany rozmiar stosu w atrybutach które przekazujemy do funkcji  pthread_create().
+        - drugim problemem było to ,że struktura która trzyma atrybuty nie była przekazana do funkcji  pthread_create(),
+        aby to naprawić należy przekazać strukturę w której ustawiliśmy odpowiedni rozmiar stosu.
+       Bug został poprawiony. 

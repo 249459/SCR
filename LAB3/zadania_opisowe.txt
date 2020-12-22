@@ -1,0 +1,69 @@
+Zadanie 3 
+W tym zdaniu trzeba było zapoznać się z system plików proc.
+Jest to folder w którym możemy znaleźć foldery nazwane poszczególnym PID procesów,
+gdy wejdziemy do folderu \proc\PID_Procesu mamy poszczególne pliki/foldery są to pliki z ifnormacjami
+na temat danego procesu danego procesu. Moje badania odbyły się w następujący sposób stworzyłem proces xclock
+wszedłem do katalogu /proc/7100 i wypisałem plik status na treminal(cat staus), w tym pliku są informację 
+z których korzysta program ps można to zobaczyć wywołując program ps -l i porównując 
+otrzymany output z tym co znajduję się w pliku stat(PID procesu, PPID proces itd).
+Ponad to program top też korzysta z katalogu proc co można sprawdzić poprzez 
+odebranie prawa dostępu do czytania z poszczególnych plików, w folderze fd możemy 
+sprawdzić różne deskryptory, w innych plikach katologach możemy znaleźć jeszcze więcej informacji.
+
+Zadanie 4
+ Program łapiący sgnały:
+    Uruchomienie programu łapiącego sygnały i wyświetleniu pliku /proc/status można zobaczyć 
+    jakie sygnały zostają obsługiwane w linijce SigCgt po przejściu na system binarny 
+    dostałem informację 110101000000000 czyli zostały obsłużone sygnały o numerach 10, 12 ,14 oraz 15 czyli 
+    SIGUSR1, SIGUSR2 , SIGALRAm oraz SIGTERM.
+ Potok programów (./zad4 | cat | cat > ./1.txt):
+    Program(./zad4) wypisuje prosty tekst. Po uruchomieniu wszystkich programów w potoku 
+    wyświetliłem listę filedescriptorów przy użyciu polecenia ls- l /proc/PID_danego_procesu_z_potoku, 
+    dzięki temu zauważyłem ,że każdy znich posiada 0 ->, 1->, 2-> które ozanczają kolejno stdin, stdout,
+    stderr. Obserwując kolejno dla każdego procesu z potoku możemy zauwayżć iż standardowe 
+    wyjście stdout pierwszego jest skierowane na wejście drugiego(stdin), drugi 
+    natomiast ma ustawione wejście(sdtin) na wyjście pierwszego a wyjście(stdout) 
+    ma ustawione na wejście(sdtin) trzeciego, trzeci ma wejście(sdtin) ustawione na wyjście drugiego(stdout)
+    a wyjście trzeciego jest przekierowane do ./1.txt(BARDZO SZYBKO PLIK SIĘ ROBI OGROMNY, LEPIEJ UWAŻAĆ).
+    Obserwując te zależności jesteśmy w stanie ustalić który program jak był wywołany w potoku.
+
+Zadanie 5
+   strace - to narzędzie do analizy kodu badające interakcję programu z kernelem systemu operacyjnego.
+        Ważne opcje:
+            strace -o {nazwa pliku] [polecenie] - takie wywołanie pozwala zapisać logi do wskazanego pliku
+            strace -p [PID_NUMER] - pozwala podłączyć się do istniejącego procesu 
+            strace -fe trace=execve [polecenie] - pozwala na sprawdzenie jakie inne programy otwiera proces 
+            strace -r [polecenie] - wyświetla logi w raz z relatywnym czasem między początkami kolejnych instrukcji 
+            strace -c [polecenie] - wyświetla raport o procentowym czasie spędzonym na wykonywaniu danych instrukcji.
+Zadanie 6
+    Analiza programu programu który wyświetla "Hello world":
+        Podczas analizy programu można zauważyć iż przed wyświetleniem
+        na stdout musi dojść do wielu nisko poziomowych operacji. Wykonanie polecenia
+        zaczyna się od uruchomienia programu przez funkcje execve(), można też zobaczyć mapowanie pamięci 
+        poleceni mmap(), także wiele operacji na poszczególnych komórkach pamięci aż w Końcu wypisanie oraz
+        zakończenie programu.
+    Wyszukanie odbyło się 
+        strace -o 2.txt bash
+        cat 2.txt | grep open | grep con
+        w ten sposób znaleziona wywołanie instrukcji 
+        openat(AT_FDCWD, "/etc/nsswitch.conf", O_RDONLY|O_CLOEXEC) = 6
+    Sprawdzenie edytowanego pliku 
+        Po zapisaniu logów do pliku wyszukałem poleceniem grep poleceń takich jak open/close
+        zauwayżłem ,że plik był na zmiane otwierany i zamykan wiec nie był on cały czas otwarty, był otwarty 
+        tylko podczas kluczowych instrukcji.
+    Sprawdzenie deskryptorów
+            Wywołałem instrukcje strace -e trace=desc ./zad4
+            Widać w koljenych podanych przykładowo punktach 
+                fstat(6, {st_mode=S_IFREG|0644, st_size=99819, ...}) = 0
+                write(1, "Hello world", 11Hello world) 
+            ,że wywołanie posiada dwa deksryptory 6 oraz 1, 1 oznacza standardowe wyjście 
+            co jest oczywiste bo printujemy.
+
+Zadnie 7
+    Program poprzez brak warunku kończącego w petli for wychodzi poza zakres
+    przez co odwoływał się do pamięci która nie należała do niego.
+    Znalałem ten problem wykorzystując wywoałnie strace ./zad7
+    w logach zobaczyłem dziwne operacje operacje piasnia których nie powinno być.
+    Program został zabity przez sygnał SIGSEVGV a ja otrzymałem na wyjściu seg faulta.
+    Dzięki poleceniu strace -t ./zad7 które dodaje timestampy można zobaczyć ile trwają 
+    poszczególne wywołania instrukcji.
